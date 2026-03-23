@@ -1,13 +1,15 @@
 import { isSupabaseConfigured } from "./env";
 
-const ADMIN_CODE = process.env.ADMIN_CODE || "admin123";
+function getAdminCode(): string {
+  return process.env.ADMIN_CODE || "test";
+}
 
 export function isAdminConfigured(): boolean {
   return true;
 }
 
 export function validateAdminCode(code: string): boolean {
-  return code === ADMIN_CODE;
+  return code === getAdminCode();
 }
 
 export async function getSubmissions(status?: string) {
