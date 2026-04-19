@@ -20,6 +20,15 @@ export type ListingRow = {
   status: string;
   created_at: string;
   updated_at: string;
+  // Extended fields from the real retreat data
+  focus: string | null;
+  length_text: string | null;
+  price_text: string | null;
+  target_audience: string | null;
+  best_for: string | null;
+  notes: string | null;
+  luxury_level: 'Premium' | 'Luxury' | 'Ultra-Luxury' | null;
+  environment: 'Coastal' | 'Desert' | 'Lakeside' | 'Mountain' | 'Urban' | null;
 };
 
 export type ListingCategoryJoin = {
