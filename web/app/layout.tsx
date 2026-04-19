@@ -1,17 +1,28 @@
 import type { Metadata } from "next";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { ConfigBanner } from "@/components/config-banner";
 import { isSupabaseConfigured } from "@/lib/env";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Curated Retreats",
-    template: "%s — Curated Retreats",
+    default: "Best Longevity Retreats in the U.S. — A Curated Guide",
+    template: "%s — Longevity Retreats",
   },
   description:
-    "Discover trusted retreat programs and submit your venue for editorial review.",
+    "A curated directory of the best longevity retreats and clinics in the United States. Compare programs focused on healthspan, fitness, mindfulness, and advanced diagnostics.",
 };
 
 export default function RootLayout({
@@ -22,12 +33,10 @@ export default function RootLayout({
   const configured = isSupabaseConfigured();
 
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
+    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+      <body>
         {!configured ? <ConfigBanner /> : null}
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

@@ -1,66 +1,129 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
 import type { ListingWithCategories } from "@/types/listing";
-import { normalizeCategories } from "@/types/listing";
-import { MapPin } from "lucide-react";
 
 type Props = { listing: ListingWithCategories };
 
+const luxColors: Record<string, { bg: string; color: string }> = {
+  Premium:       { bg: "#f2ead0", color: "#7e6719" },
+  Luxury:        { bg: "#f2ead0", color: "#7e6719" },
+  "Ultra-Luxury":{ bg: "#f2ead0", color: "#7e6719" },
+};
+
 export function ListingCard({ listing }: Props) {
+  const [open, setOpen] = useState(false);
   const location = [listing.city, listing.region].filter(Boolean).join(", ");
-  const categories = normalizeCategories(listing).map((c) => c.name);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <Link href={`/listings/${listing.slug}`} className="flex flex-1 flex-col">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100">
-          {listing.image_url ? (
-            <Image
-              src={listing.image_url}
-              alt=""
-              fill
-              className="object-cover transition duration-500 group-hover:scale-[1.02]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-sm text-stone-400">
-              Image coming soon
-            </div>
-          )}
-          {listing.featured ? (
-            <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-stone-800 shadow-sm backdrop-blur">
-              Featured
-            </span>
-          ) : null}
+    <article style={{
+      background: "#fff",
+      border: "1px solid var(--line)",
+      borderRadius: 16,
+      padding: 26,
+      display: "flex",
+      flexDirection: "column",
+      position: "relative",
+      overflow: "hidden",
+      transition: "transform .2s ease, box-shadow .2s ease, border-color .2s",
+    }}
+      className="listing-card card-animate"
+    >
+      {/* Top accent bar on hover via CSS class */}
+      <div className="card-top-bar" />
+
+      <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.25rem", margin: "0 0 4px", fontWeight: 500, color: "var(--ink)" }}>
+        {listing.title}
+      </h3>
+
+      {location ? (
+        <div style={{ color: "var(--muted)", fontSize: "0.88rem", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ color: "var(--accent)", fontSize: "0.7rem" }}>◉</span>
+          {location}
         </div>
-        <div className="flex flex-1 flex-col gap-3 p-5">
-          <div className="flex flex-wrap gap-2">
-            {categories.slice(0, 3).map((name, idx) => (
-              <span
-                key={`${name}-${idx}`}
-                className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-700"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
-          <h2 className="font-serif text-xl leading-snug text-stone-900">
-            {listing.title}
-          </h2>
-          {location ? (
-            <p className="flex items-center gap-1.5 text-sm text-stone-600">
-              <MapPin className="h-4 w-4 shrink-0 text-stone-400" aria-hidden />
-              {location}
-            </p>
-          ) : null}
-          <p className="line-clamp-3 text-sm leading-relaxed text-stone-600">
-            {listing.summary}
-          </p>
-          <span className="mt-auto pt-2 text-sm font-medium text-stone-900 underline-offset-4 group-hover:underline">
-            View details
+      ) : null}
+
+      {/* Chips */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+        {listing.focus ? (
+          <span style={{ fontSize: "0.72rem", letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--accent-soft)", color: "var(--accent)", padding: "5px 10px", borderRadius: 999, fontWeight: 500 }}>
+            {listing.focus}
           </span>
+        ) : null}
+        {listing.environment ? (
+          <span style={{ fontSize: "0.72rem", letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--chip)", color: "var(--ink-soft)", padding: "5px 10px", borderRadius: 999, fontWeight: 500 }}>
+            {listing.environment}
+          </span>
+        ) : null}
+        {listing.luxury_level ? (
+          <span style={{ fontSize: "0.72rem", letterSpacing: "0.04em", textTransform: "uppercase", padding: "5px 10px", borderRadius: 999, fontWeight: 500, background: luxColors[listing.luxury_level]?.bg ?? "#f2ead0", color: luxColors[listing.luxury_level]?.color ?? "#7e6719" }}>
+            {listing.luxury_level}
+          </span>
+        ) : null}
+      </div>
+
+      <p style={{ color: "var(--ink-soft)", fontSize: "0.95rem", margin: "0 0 18px", flex: 1, lineHeight: 1.6 }}>
+        {listing.summary}
+      </p>
+
+      {/* Expand toggle */}
+      {(listing.length_text || listing.price_text || listing.target_audience) ? (
+        <button
+          onClick={() => setOpen((v) => !v)}
+          style={{
+            background: "none",
+            border: "none",
+            color: "var(--accent)",
+            cursor: "pointer",
+            font: "inherit",
+            fontSize: "0.88rem",
+            fontWeight: 500,
+            padding: 0,
+            marginBottom: 10,
+            textAlign: "left",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <span style={{ display: "inline-block", transition: "transform .2s", transform: open ? "rotate(90deg)" : "none" }}>›</span>
+          Program details
+        </button>
+      ) : null}
+
+      {open ? (
+        <div style={{ paddingTop: 10, borderTop: "1px dashed var(--line)", marginTop: 0, marginBottom: 10 }}>
+          <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "auto 1fr", gap: "6px 14px", fontSize: "0.9rem" }}>
+            {listing.length_text ? (
+              <><dt style={{ color: "var(--muted)", fontWeight: 500 }}>Length</dt><dd style={{ margin: 0, color: "var(--ink-soft)" }}>{listing.length_text}</dd></>
+            ) : null}
+            {listing.price_text ? (
+              <><dt style={{ color: "var(--muted)", fontWeight: 500 }}>Price</dt><dd style={{ margin: 0, color: "var(--ink-soft)" }}>{listing.price_text}</dd></>
+            ) : null}
+            {listing.target_audience ? (
+              <><dt style={{ color: "var(--muted)", fontWeight: 500 }}>Target</dt><dd style={{ margin: 0, color: "var(--ink-soft)" }}>{listing.target_audience}</dd></>
+            ) : null}
+            {listing.best_for ? (
+              <><dt style={{ color: "var(--muted)", fontWeight: 500 }}>Best for</dt><dd style={{ margin: 0, color: "var(--ink-soft)" }}>{listing.best_for}</dd></>
+            ) : null}
+            {listing.notes ? (
+              <><dt style={{ color: "var(--muted)", fontWeight: 500 }}>Notes</dt><dd style={{ margin: 0, color: "var(--ink-soft)" }}>{listing.notes}</dd></>
+            ) : null}
+          </dl>
         </div>
-      </Link>
+      ) : null}
+
+      {/* Card footer */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--line)" }}>
+        <span style={{ fontSize: "0.88rem", color: "var(--ink)", fontWeight: 600 }}>
+          {listing.price_text ?? ""}
+        </span>
+        {listing.website_url ? (
+          <a href={listing.website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.88rem", fontWeight: 500, color: "var(--accent)", textDecoration: "none" }}>
+            Visit site ↗
+          </a>
+        ) : null}
+      </div>
     </article>
   );
 }
