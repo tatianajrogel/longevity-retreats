@@ -4,6 +4,7 @@ import "./globals.css";
 import { ConfigBanner } from "@/components/config-banner";
 import { isSupabaseConfigured } from "@/lib/env";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
         {!configured ? <ConfigBanner /> : null}
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
