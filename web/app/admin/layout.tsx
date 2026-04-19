@@ -90,7 +90,6 @@ export default function AdminLayout({
     { href: "/admin", label: "Dashboard" },
     { href: "/admin/listings", label: "Listings" },
     { href: "/admin/listings/new", label: "+ New" },
-    { href: "/admin/submissions", label: "Submissions" },
     { href: "/admin/sync", label: "Sync" },
   ];
 

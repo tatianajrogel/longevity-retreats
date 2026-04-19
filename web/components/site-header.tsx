@@ -20,7 +20,7 @@ export function SiteHeader() {
           <a href="/#retreats" style={{ color: "var(--ink-soft)", textDecoration: "none" }}>Retreats</a>
           <a href="/#updates" style={{ color: "var(--ink-soft)", textDecoration: "none" }}>Updates</a>
           <a href="/#about" style={{ color: "var(--ink-soft)", textDecoration: "none" }}>About</a>
-          <Link href="/admin/submissions" style={{ color: "var(--muted)", textDecoration: "none" }}>Admin</Link>
+          <Link href="/admin" style={{ color: "var(--muted)", textDecoration: "none" }}>Admin</Link>
         </div>
       </div>
     </nav>
