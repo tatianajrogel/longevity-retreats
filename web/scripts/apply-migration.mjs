@@ -9,18 +9,9 @@ const repoRoot = path.resolve(__dirname, "..", "..");
 const migrationsDir = path.join(repoRoot, "supabase", "migrations");
 const migrationPlans = [
   {
-    file: "20260418120000_init.sql",
+    file: "20260418000000_complete.sql",
     probe:
-      "select to_regclass('public.categories') is not null and to_regclass('public.listings') is not null and to_regclass('public.listing_categories') is not null;",
-  },
-  {
-    file: "20260418123000_listing_submissions.sql",
-    probe: "select to_regclass('public.listing_submissions') is not null;",
-  },
-  {
-    file: "20260418124500_listing_submissions_hardening.sql",
-    probe:
-      "select exists (select 1 from pg_constraint where conname = 'listing_submissions_summary_length');",
+      "select to_regclass('public.listings') is not null and to_regclass('public.sync_log') is not null and exists (select 1 from information_schema.columns where table_name='listings' and column_name='luxury_level');",
   },
 ];
 

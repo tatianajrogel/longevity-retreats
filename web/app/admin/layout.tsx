@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { validateAdminCode, isAdminConfigured } from "@/lib/admin";
 
 export default function AdminLayout({
   children,
@@ -11,76 +10,70 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("admin_auth");
-    if (stored === "true") {
-      setAuthenticated(true);
-    }
+    try {
+      const auth = localStorage?.getItem("admin_auth");
+      const code = localStorage?.getItem("admin_auth_code");
+      if (auth === "true" && code) setAuthenticated(true);
+    } catch {}
     setLoading(false);
   }, []);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const code = fd.get("code") as string;
-
-    if (validateAdminCode(code)) {
-      localStorage.setItem("admin_auth", "true");
+    const adminCode = process.env.NEXT_PUBLIC_ADMIN_CODE ?? "admin123";
+    if (code === adminCode) {
+      try {
+        localStorage?.setItem("admin_auth", "true");
+        localStorage?.setItem("admin_auth_code", code);
+      } catch {}
       setAuthenticated(true);
+      setError(null);
     } else {
-      alert("Invalid admin code");
+      setError("Invalid admin code");
     }
   }
 
   function handleLogout() {
-    localStorage.removeItem("admin_auth");
+    try {
+      localStorage?.removeItem("admin_auth");
+      localStorage?.removeItem("admin_auth_code");
+    } catch {}
     setAuthenticated(false);
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-stone-500">Loading...</p>
-      </div>
-    );
+    return <div style={{ display: "flex", minHeight: "100vh", alignItems: "center", justifyContent: "center", color: "var(--muted)" }}>Loading…</div>;
   }
 
   if (!authenticated) {
-    const configured = isAdminConfigured();
-    if (!configured) {
-      return (
-        <main className="mx-auto max-w-md px-4 py-16 sm:px-6">
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-            <h1 className="font-serif text-xl text-amber-900">Admin not configured</h1>
-            <p className="mt-2 text-sm text-amber-800">
-              Set <code className="bg-amber-100 px-1">ADMIN_CODE</code> environment variable to enable admin access.
-            </p>
-          </div>
-        </main>
-      );
-    }
-
     return (
-      <main className="mx-auto max-w-md px-4 py-16 sm:px-6">
-        <h1 className="font-serif text-2xl text-stone-900">Admin Login</h1>
-        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+      <main style={{ maxWidth: 420, margin: "80px auto", padding: "0 24px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24 }}>
+          <span style={{ display: "inline-block", width: 8, height: 8, background: "var(--accent)", borderRadius: "50%" }} />
+          <span style={{ fontFamily: "'Fraunces', serif", fontSize: "1.15rem", fontWeight: 600 }}>Longevity Retreats</span>
+        </div>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "1.6rem", fontWeight: 500, margin: "0 0 24px" }}>Admin Login</h1>
+        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label className="text-sm text-stone-700">Admin code</label>
+            <label style={{ display: "block", fontSize: "0.85rem", color: "var(--ink-soft)", marginBottom: 6 }}>Admin code</label>
             <input
               type="password"
-              name="code"
-              defaultValue={"admin123"}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               required
-              className="mt-1 w-full rounded-xl border border-stone-300 px-3 py-2.5 outline-none transition focus:border-stone-500"
+              autoFocus
+              style={{ width: "100%", padding: "11px 14px", border: "1px solid var(--line)", borderRadius: 8, font: "inherit", fontSize: "0.95rem", color: "var(--ink)" }}
             />
           </div>
-          <button
-            type="submit"
-            className="w-full rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-stone-800"
-          >
+          {error ? <p style={{ color: "red", fontSize: "0.88rem", margin: 0 }}>{error}</p> : null}
+          <button type="submit" style={{ padding: "12px", borderRadius: 999, background: "var(--ink)", color: "var(--bg)", border: "none", fontWeight: 500, cursor: "pointer", fontSize: "0.95rem" }}>
             Sign in
           </button>
         </form>
@@ -88,21 +81,40 @@ export default function AdminLayout({
     );
   }
 
+  const navLinks = [
+    { href: "/admin/listings", label: "Listings" },
+    { href: "/admin/listings/new", label: "+ New" },
+    { href: "/admin/submissions", label: "Submissions" },
+    { href: "/admin/sync", label: "Sync" },
+  ];
+
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/admin/submissions" className="font-serif text-lg text-stone-900">
-            Admin
-          </Link>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/admin/submissions" className="text-stone-600 hover:text-stone-900">
-              Submissions
-            </Link>
-            <Link href="/" className="text-stone-600 hover:text-stone-900">
+    <div style={{ minHeight: "100vh", background: "var(--bg-soft)" }}>
+      <header style={{ borderBottom: "1px solid var(--line)", background: "#fff" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 56 }}>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: "1rem", fontWeight: 600, color: "var(--ink)" }}>Admin</div>
+          <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 999,
+                  fontSize: "0.88rem",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  color: pathname.startsWith(href) ? "var(--accent)" : "var(--ink-soft)",
+                  background: pathname.startsWith(href) ? "var(--accent-soft)" : "transparent",
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+            <Link href="/" style={{ padding: "6px 14px", fontSize: "0.88rem", color: "var(--muted)", textDecoration: "none" }}>
               View site
             </Link>
-            <button onClick={handleLogout} className="text-stone-500 hover:text-stone-700">
+            <button onClick={handleLogout} style={{ padding: "6px 14px", fontSize: "0.88rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer" }}>
               Logout
             </button>
           </nav>

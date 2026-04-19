@@ -1,2 +1,6 @@
 jd.md
 plan.md
+html/
+service-account.json
+.env.production.local
+.env.production
