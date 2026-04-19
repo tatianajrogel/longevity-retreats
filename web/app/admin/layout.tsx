@@ -82,6 +82,7 @@ export default function AdminLayout({
   }
 
   const navLinks = [
+    { href: "/admin", label: "Dashboard" },
     { href: "/admin/listings", label: "Listings" },
     { href: "/admin/listings/new", label: "+ New" },
     { href: "/admin/submissions", label: "Submissions" },
@@ -104,8 +105,8 @@ export default function AdminLayout({
                   fontSize: "0.88rem",
                   fontWeight: 500,
                   textDecoration: "none",
-                  color: pathname.startsWith(href) ? "var(--accent)" : "var(--ink-soft)",
-                  background: pathname.startsWith(href) ? "var(--accent-soft)" : "transparent",
+                  color: (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href)) ? "var(--accent)" : "var(--ink-soft)",
+                  background: (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href)) ? "var(--accent-soft)" : "transparent",
                 }}
               >
                 {label}
