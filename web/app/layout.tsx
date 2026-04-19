@@ -3,6 +3,7 @@ import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { ConfigBanner } from "@/components/config-banner";
 import { isSupabaseConfigured } from "@/lib/env";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body>
         {!configured ? <ConfigBanner /> : null}
         {children}
+        <Analytics />
       </body>
     </html>
   );
