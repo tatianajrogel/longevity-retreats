@@ -12,6 +12,8 @@ type Stats = {
   syncUpserted: number | null;
 };
 
+type SyncResult = { upserted?: number; errors?: string[] } | null;
+
 function getAdminCode() {
   try { return localStorage.getItem("admin_auth_code") ?? ""; } catch { return ""; }
 }
@@ -26,10 +28,11 @@ const cardStyle: React.CSSProperties = {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<SyncResult>(null);
 
-  useEffect(() => {
+  const loadData = () => {
     const code = getAdminCode();
-
     Promise.all([
       fetch("/api/admin/listings", { headers: { "x-admin-code": code } }).then(r => r.json()),
       fetch("/api/sync").then(r => r.json()),
@@ -45,7 +48,28 @@ export default function AdminDashboard() {
       });
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  async function handleSync() {
+    const secret = prompt("Enter your SYNC_SECRET to trigger sync:");
+    if (!secret) return;
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const res = await fetch("/api/sync", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${secret}` },
+      });
+      const data = await res.json();
+      setSyncResult(data);
+      loadData();
+    } catch {
+      setSyncResult({ errors: ["Network error — check your connection."] });
+    }
+    setSyncing(false);
+  }
 
   const statCards = stats ? [
     { label: "Total Listings", value: stats.total, href: "/admin/listings", accent: false },
@@ -110,28 +134,45 @@ export default function AdminDashboard() {
           <h2 style={{ margin: "0 0 20px", fontSize: "1rem", fontWeight: 600, color: "var(--ink)" }}>Google Sheets Sync</h2>
           {loading ? (
             <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>Loading…</p>
-          ) : stats?.lastSync ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div>
-                <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>Last sync</div>
-                <div style={{ fontSize: "0.95rem", color: "var(--ink)", fontWeight: 500 }}>
-                  {new Date(stats.lastSync).toLocaleString()}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>Rows upserted</div>
-                <div style={{ fontSize: "0.95rem", color: "var(--ink)", fontWeight: 500 }}>{stats.syncUpserted ?? 0}</div>
-              </div>
-              <Link href="/admin/sync" style={{ display: "inline-block", marginTop: 4, padding: "10px 20px", borderRadius: 999, background: "var(--accent)", color: "#fff", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500, textAlign: "center" }}>
-                Sync Now
-              </Link>
-            </div>
           ) : (
-            <div>
-              <p style={{ color: "var(--muted)", fontSize: "0.9rem", margin: "0 0 16px" }}>No sync has run yet.</p>
-              <Link href="/admin/sync" style={{ display: "inline-block", padding: "10px 20px", borderRadius: 999, background: "var(--accent)", color: "#fff", textDecoration: "none", fontSize: "0.88rem", fontWeight: 500 }}>
-                Run First Sync
-              </Link>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {stats?.lastSync ? (
+                <>
+                  <div>
+                    <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>Last sync</div>
+                    <div style={{ fontSize: "0.95rem", color: "var(--ink)", fontWeight: 500 }}>
+                      {new Date(stats.lastSync).toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>Rows upserted</div>
+                    <div style={{ fontSize: "0.95rem", color: "var(--ink)", fontWeight: 500 }}>{stats.syncUpserted ?? 0}</div>
+                  </div>
+                </>
+              ) : (
+                <p style={{ color: "var(--muted)", fontSize: "0.9rem", margin: 0 }}>No sync has run yet.</p>
+              )}
+
+              <button
+                onClick={handleSync}
+                disabled={syncing}
+                style={{ padding: "10px 20px", borderRadius: 999, background: "var(--accent)", color: "#fff", border: "none", fontWeight: 500, cursor: syncing ? "wait" : "pointer", fontSize: "0.88rem" }}
+              >
+                {syncing ? "Syncing…" : "Sync Now"}
+              </button>
+
+              {syncResult && (
+                <div style={{ padding: 12, borderRadius: 8, background: syncResult.errors?.length ? "#fff0f0" : "#f0fdf4", fontSize: "0.85rem" }}>
+                  {syncResult.errors?.length ? (
+                    <>
+                      <div style={{ fontWeight: 600, color: "#7f1d1d", marginBottom: 4 }}>Sync errors</div>
+                      {syncResult.errors.map((e, i) => <div key={i} style={{ color: "#7f1d1d" }}>{e}</div>)}
+                    </>
+                  ) : (
+                    <div style={{ color: "#065f46", fontWeight: 500 }}>✓ {syncResult.upserted ?? 0} rows upserted</div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
