@@ -55,9 +55,14 @@ export default function AdminLayout({
   if (!authenticated) {
     return (
       <main style={{ maxWidth: 420, margin: "80px auto", padding: "0 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24 }}>
-          <span style={{ display: "inline-block", width: 8, height: 8, background: "var(--accent)", borderRadius: "50%" }} />
-          <span style={{ fontFamily: "'Fraunces', serif", fontSize: "1.15rem", fontWeight: 600 }}>Longevity Retreats</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, background: "var(--accent)", borderRadius: "50%" }} />
+            <span style={{ fontFamily: "'Fraunces', serif", fontSize: "1.15rem", fontWeight: 600 }}>Longevity Retreats</span>
+          </div>
+          <Link href="/" style={{ fontSize: "0.85rem", color: "var(--muted)", textDecoration: "none" }}>
+            ← Back to site
+          </Link>
         </div>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "1.6rem", fontWeight: 500, margin: "0 0 24px" }}>Admin Login</h1>
         <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
