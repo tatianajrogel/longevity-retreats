@@ -20,11 +20,11 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: "Best Longevity Retreats in the U.S. — A Curated Guide",
-    template: "%s — Longevity Retreats",
+    default: "Great Health Retreats — Invest in a Better Quality of Life",
+    template: "%s — Great Health Retreats",
   },
   description:
-    "A curated directory of the best longevity retreats and clinics in the United States. Compare programs focused on healthspan, fitness, mindfulness, and advanced diagnostics.",
+    "A curated directory of the best health and wellness retreats for successful professionals. Compare programs focused on longevity, fitness, mindfulness, and advanced diagnostics.",
 };
 
 export default function RootLayout({

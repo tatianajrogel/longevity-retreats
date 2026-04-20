@@ -3,12 +3,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ListingCard } from "@/components/listing-card";
 import { FilterBar } from "@/components/filter-bar";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import { getCategories, getListingsByCategory, getListings } from "@/lib/listings";
 import type { CategoryRow, ListingWithCategories } from "@/types/listing";
 
 export const revalidate = 60;
 
-type SearchParams = { q?: string; env?: string; lux?: string; cat?: string };
+type SearchParams = { q?: string; env?: string; lux?: string; cat?: string; type?: string };
 
 const CATEGORY_BLURBS: Record<string, string> = {
   "comprehensive-luxury":    "Full-service, expert-led immersions built for multi-day lifestyle resets.",
@@ -159,16 +160,16 @@ export default async function Home({
         {wrap({}, (
           <>
             <div style={{ fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)", marginBottom: "1.25rem" }}>
-              A Curated Directory · Updated April 2026
+              A Curated Directory · GreatHealthRetreats.com
             </div>
             <h1 style={{ fontSize: "clamp(2.4rem, 5vw, 4.2rem)", fontWeight: 500, letterSpacing: "-0.02em", margin: 0 }}>
-              Best Longevity Retreats<br />in the United States.
+              Great Health Retreats —<br />Invest in a Better Quality of Life.
             </h1>
             <p style={{ fontSize: "clamp(1.05rem, 1.4vw, 1.25rem)", color: "var(--ink-soft)", maxWidth: 720, margin: "1.25rem 0 2rem" }}>
-              Curated programs designed to support long-term health, energy, and vitality — from structured fitness resets to advanced diagnostic clinics worth traveling for.
+              A curated directory for health-conscious professionals. Discover wellness, longevity, and health retreats — then visit each retreat's own website to book.
             </p>
             <div style={{ display: "flex", gap: 22, flexWrap: "wrap", color: "var(--muted)", fontSize: "0.88rem", marginBottom: "2rem" }}>
-              {["18 programs reviewed", "Fitness · Mindfulness · Diagnostics", "Updated monthly"].map((s) => (
+              {["18 programs reviewed", "Fitness · Mindfulness · Longevity Clinics", "Updated monthly"].map((s) => (
                 <span key={s} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ display: "inline-block", width: 4, height: 4, borderRadius: "50%", background: "var(--muted)" }} />
                   {s}
@@ -197,7 +198,7 @@ export default async function Home({
             </div>
             <div>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>
-                This guide is for individuals who are serious about maintaining high levels of physical health, energy, and cognitive performance as they age. Longevity retreats provide structured environments where participants can focus on nutrition, movement, recovery, sleep, and stress reduction — without the distractions of everyday life.
+                Great Health Retreats is for successful professionals who value their health and their time. These are curated programs for people who want a structured, expert-led environment to reset and invest in long-term wellbeing — without the noise of promotional content or generic listicles.
               </p>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>These programs are particularly valuable for individuals who want to:</p>
               <ul style={{ listStyle: "none", padding: 0, margin: "1rem 0 0" }}>
@@ -228,7 +229,7 @@ export default async function Home({
             </div>
             <div>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>
-                Longevity retreats combine evidence-based wellness practices with immersive environments designed to improve healthspan, energy, and long-term vitality. The retreats featured here are evaluated on:
+                Every retreat in this directory is evaluated against a consistent set of criteria. We do not accept payment for inclusion. The retreats featured here are evaluated on:
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: "1rem 0 0" }}>
                 {[
@@ -281,28 +282,20 @@ export default async function Home({
           }} className="signup-grid">
             <div>
               <SectionLabel gold>Stay in the loop</SectionLabel>
-              <h2 style={{ color: "var(--bg)", margin: "0 0 1rem", fontSize: "clamp(1.6rem, 2.5vw, 2.2rem)" }}>Get updates on new retreats and clinics.</h2>
+              <h2 style={{ color: "var(--bg)", margin: "0 0 1rem", fontSize: "clamp(1.6rem, 2.5vw, 2.2rem)" }}>Get our free retreat guide delivered to your inbox.</h2>
               <p style={{ color: "rgba(247,245,239,.8)", marginBottom: "1.5rem" }}>
-                We add new longevity retreats, clinics worth traveling for, and decision frameworks as the directory expands. Drop a note and you&apos;ll be added to the update list.
+                Subscribe to receive our curated guide to the best health retreats, plus updates as the directory expands. No spam — unsubscribe any time.
               </p>
-              <a
-                href="mailto:cpoznek@gmail.com?subject=Longevity%20Retreats"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 20px", borderRadius: 999, fontWeight: 500, fontSize: "0.95rem", border: "1px solid var(--bg)", background: "var(--bg)", color: "var(--ink)", textDecoration: "none" }}
-              >
-                Email to subscribe
-              </a>
-              <p style={{ fontSize: "0.82rem", marginTop: 16, color: "rgba(247,245,239,.6)" }}>
-                Send to <strong style={{ color: "var(--bg)" }}>cpoznek@gmail.com</strong> · Subject: <em>Longevity Retreats</em>
-              </p>
+              <NewsletterSignup />
             </div>
             <div>
-              <div style={{ fontFamily: "'Fraunces', serif", fontSize: "1.1rem", marginBottom: 12, color: "var(--bg)" }}>Future updates will include</div>
+              <div style={{ fontFamily: "'Fraunces', serif", fontSize: "1.1rem", marginBottom: 12, color: "var(--bg)" }}>What you&apos;ll receive</div>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "rgba(247,245,239,.85)", fontSize: "0.95rem" }}>
                 {[
-                  "Additional retreat recommendations",
-                  "Longevity clinics worth traveling for",
-                  "Decision frameworks",
-                  "New program discoveries",
+                  "Our curated retreat guide (PDF)",
+                  "New retreat & clinic discoveries",
+                  "Decision frameworks for choosing",
+                  "Monthly directory updates",
                 ].map((item) => (
                   <li key={item} style={{ padding: "8px 0", borderBottom: "1px solid rgba(247,245,239,.15)" }}>
                     <span style={{ color: "var(--gold)", fontWeight: 600, marginRight: 6 }}>+</span>
@@ -321,17 +314,17 @@ export default async function Home({
           <TwoCol>
             <div>
               <SectionLabel>About this project</SectionLabel>
-              <h2 style={{ margin: 0, fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}>A clearer map of the longevity landscape.</h2>
+              <h2 style={{ margin: 0, fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}>A clearer map of the health retreat landscape.</h2>
             </div>
             <div>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>
-                This site was created to help individuals identify high-quality programs that support long-term health, energy, and quality of life.
+                Great Health Retreats was built for people who are serious about their health but don&apos;t have time to wade through promotional content, generic listicles, or sites that bury the information that actually matters.
               </p>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>
-                Interest in longevity continues to grow, yet the available information is often fragmented, promotional, or difficult to evaluate objectively. The goal of this project is to create a clear, structured resource that helps individuals make more informed decisions about programs designed to improve healthspan.
+                Every retreat is evaluated against consistent criteria. Cards give you the essentials at a glance — expand for program details, then visit the retreat&apos;s own website for booking.
               </p>
               <p style={{ color: "var(--ink-soft)", fontSize: "1.02rem" }}>
-                Over time, this resource will expand to include additional retreats, longevity clinics, decision frameworks, and curated recommendations for individuals serious about maintaining long-term vitality.
+                Over time this directory will expand to include additional retreats, longevity clinics worth traveling for, and decision frameworks to help you choose the right program.
               </p>
             </div>
           </TwoCol>
