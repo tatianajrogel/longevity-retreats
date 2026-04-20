@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ConfigBanner } from "@/components/config-banner";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -33,6 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const configured = isSupabaseConfigured();
+  const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
 
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
@@ -41,6 +43,17 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        {ga4Id ? (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="afterInteractive" />
+            <Script id="ga4-init" strategy="afterInteractive">{`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${ga4Id}');
+            `}</Script>
+          </>
+        ) : null}
       </body>
     </html>
   );
