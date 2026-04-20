@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: "longevity-retreats",
-      cwd: "/var/www/longevity-retreats/web",
+      name: "great-health-retreats",
+      cwd: "/var/www/great-health-retreats/web",
       script: "node_modules/.bin/next",
       args: "start",
       instances: 1,
@@ -21,9 +21,12 @@ module.exports = {
         GOOGLE_SHEET_ID: "",
         GOOGLE_SERVICE_ACCOUNT_JSON: "",
         DATABASE_URL: "",
+        BEEHIIV_PUBLICATION_ID: "",
+        BEEHIIV_API_KEY: "",
+        NEXT_PUBLIC_GA4_ID: "",
       },
-      out_file: "/var/log/longevity-retreats/out.log",
-      error_file: "/var/log/longevity-retreats/error.log",
+      out_file: "/var/log/great-health-retreats/out.log",
+      error_file: "/var/log/great-health-retreats/error.log",
       log_date_format: "YYYY-MM-DD HH:mm:ss Z",
       max_restarts: 10,
       restart_delay: 5000,
