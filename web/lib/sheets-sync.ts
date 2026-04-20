@@ -28,7 +28,7 @@ export async function syncFromSheet(): Promise<SyncResult> {
     const sheets = google.sheets({ version: "v4", auth });
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "A:M",
+      range: "A:N",
     });
 
     const rows = response.data.values ?? [];
@@ -39,7 +39,7 @@ export async function syncFromSheet(): Promise<SyncResult> {
     // Expected columns (row 1 is header, data starts at row 2):
     // A: title  B: summary  C: body  D: city  E: region  F: country
     // G: website_url  H: image_url  I: categories (comma-separated slugs)
-    // J: focus  K: price_text  L: luxury_level  M: environment
+    // J: focus  K: price_text  L: luxury_level  M: environment  N: listing_type
     const dataRows = rows.slice(1);
 
     const supabase = createSupabaseAdminClient();
@@ -52,7 +52,7 @@ export async function syncFromSheet(): Promise<SyncResult> {
 
     for (let i = 0; i < dataRows.length; i++) {
       const row = dataRows[i];
-      const [title, summary, body, city, region, country, website_url, image_url, categories, focus, price_text, luxury_level, environment] = row;
+      const [title, summary, body, city, region, country, website_url, image_url, categories, focus, price_text, luxury_level, environment, listing_type] = row;
 
       if (!title?.trim()) continue;
 
@@ -79,6 +79,7 @@ export async function syncFromSheet(): Promise<SyncResult> {
           price_text: price_text?.trim() || null,
           luxury_level: luxury_level?.trim() || null,
           environment: environment?.trim() || null,
+          listing_type: listing_type?.trim() || null,
           status: "published",
           updated_at: new Date().toISOString(),
         };

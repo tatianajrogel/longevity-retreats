@@ -55,8 +55,8 @@ function TwoCol({ children }: { children: React.ReactNode }) {
   );
 }
 
-async function DirectorySection({ q, env, lux, cat }: { q?: string; env?: string; lux?: string; cat?: string }) {
-  const hasFilter = !!(q || env || lux || cat);
+async function DirectorySection({ q, env, lux, cat, type }: { q?: string; env?: string; lux?: string; cat?: string; type?: string }) {
+  const hasFilter = !!(q || env || lux || cat || type);
 
   let listings: ListingWithCategories[] = [];
   let categories: CategoryRow[] = [];
@@ -65,7 +65,7 @@ async function DirectorySection({ q, env, lux, cat }: { q?: string; env?: string
   if (hasFilter) {
     const [catRes, listRes] = await Promise.all([
       getCategories(),
-      getListings({ q, environment: env, luxuryLevel: lux, categorySlug: cat }),
+      getListings({ q, environment: env, luxuryLevel: lux, categorySlug: cat, listingType: type }),
     ]);
     categories = catRes.categories;
     listings = listRes.listings;
@@ -101,6 +101,7 @@ async function DirectorySection({ q, env, lux, cat }: { q?: string; env?: string
           defaultEnv={env}
           defaultLux={lux}
           defaultCat={cat}
+          defaultType={type}
         />
       </Suspense>
 
@@ -142,6 +143,7 @@ export default async function Home({
   const env = sp.env;
   const lux = sp.lux;
   const cat = sp.cat;
+  const type = sp.type;
 
   return (
     <>
@@ -261,7 +263,7 @@ export default async function Home({
               Search and filter across comprehensive luxury programs, mindfulness-focused retreats, structured fitness resets, and longevity clinics worth traveling for.
             </p>
             <Suspense fallback={<div style={{ height: 80 }} />}>
-              <DirectorySection q={q} env={env} lux={lux} cat={cat} />
+              <DirectorySection q={q} env={env} lux={lux} cat={cat} type={type} />
             </Suspense>
           </>
         ))}

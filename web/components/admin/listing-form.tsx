@@ -15,7 +15,7 @@ type FormData = {
   image_url: string;
   featured: boolean;
   status: "draft" | "published";
-  focus: string;
+  listing_type: string;
   length_text: string;
   price_text: string;
   target_audience: string;
@@ -36,6 +36,7 @@ type Props = {
 
 const ENVS = ["", "Coastal", "Desert", "Lakeside", "Mountain", "Urban"];
 const LUXS = ["", "Premium", "Luxury", "Ultra-Luxury"];
+const LISTING_TYPES = ["", "Comprehensive Wellness", "Immersive Lifestyle Reset", "Balanced Wellness", "Mindfulness", "Fitness Reset", "Preventative Diagnostics", "Longevity Clinic", "Other"];
 const STATUSES = ["draft", "published"] as const;
 
 function slugify(text: string) {
@@ -83,7 +84,7 @@ export function ListingForm({ initialData, listingId, adminCode }: Props) {
     image_url: "",
     featured: false,
     status: "draft",
-    focus: "",
+    listing_type: "",
     length_text: "",
     price_text: "",
     target_audience: "",
@@ -194,7 +195,12 @@ export function ListingForm({ initialData, listingId, adminCode }: Props) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-        <div><label style={labelStyle}>Focus</label><input value={form.focus} onChange={(e) => set("focus", e.target.value)} style={inputStyle} /></div>
+        <div>
+          <label style={labelStyle}>Type</label>
+          <select value={form.listing_type} onChange={(e) => set("listing_type", e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+            {LISTING_TYPES.map((v) => <option key={v} value={v}>{v || "— None —"}</option>)}
+          </select>
+        </div>
         <div><label style={labelStyle}>Length</label><input value={form.length_text} onChange={(e) => set("length_text", e.target.value)} placeholder="e.g. 3–7 days" style={inputStyle} /></div>
         <div><label style={labelStyle}>Price</label><input value={form.price_text} onChange={(e) => set("price_text", e.target.value)} placeholder="e.g. $2,000 – $5,000" style={inputStyle} /></div>
       </div>

@@ -11,10 +11,12 @@ type Props = {
   defaultEnv?: string;
   defaultLux?: string;
   defaultCat?: string;
+  defaultType?: string;
 };
 
 const ENVS = ["Coastal", "Desert", "Lakeside", "Mountain", "Urban"];
 const LUXS = ["Premium", "Luxury", "Ultra-Luxury"];
+const TYPES = ["Comprehensive Wellness", "Immersive Lifestyle Reset", "Balanced Wellness", "Mindfulness", "Fitness Reset", "Preventative Diagnostics", "Longevity Clinic", "Other"];
 
 const selectStyle: React.CSSProperties = {
   padding: "11px 36px 11px 14px",
@@ -31,7 +33,7 @@ const selectStyle: React.CSSProperties = {
   fontSize: "0.95rem",
 };
 
-export function FilterBar({ categories, total, defaultQ, defaultEnv, defaultLux, defaultCat }: Props) {
+export function FilterBar({ categories, total, defaultQ, defaultEnv, defaultLux, defaultCat, defaultType }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -83,6 +85,16 @@ export function FilterBar({ categories, total, defaultQ, defaultEnv, defaultLux,
             }}
           />
         </div>
+
+        {/* Type */}
+        <select
+          value={defaultType ?? ""}
+          onChange={(e) => navigate({ type: e.target.value })}
+          style={selectStyle}
+        >
+          <option value="">All types</option>
+          {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
 
         {/* Environment */}
         <select

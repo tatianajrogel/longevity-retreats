@@ -29,6 +29,7 @@ export type ListingRow = {
   notes: string | null;
   luxury_level: 'Premium' | 'Luxury' | 'Ultra-Luxury' | null;
   environment: 'Coastal' | 'Desert' | 'Lakeside' | 'Mountain' | 'Urban' | null;
+  listing_type: 'Comprehensive Wellness' | 'Immersive Lifestyle Reset' | 'Balanced Wellness' | 'Mindfulness' | 'Fitness Reset' | 'Preventative Diagnostics' | 'Longevity Clinic' | 'Other' | null;
 };
 
 export type ListingCategoryJoin = {

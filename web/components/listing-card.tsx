@@ -45,9 +45,9 @@ export function ListingCard({ listing }: Props) {
 
       {/* Chips */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
-        {listing.focus ? (
+        {listing.listing_type ? (
           <span style={{ fontSize: "0.72rem", letterSpacing: "0.04em", textTransform: "uppercase", background: "var(--accent-soft)", color: "var(--accent)", padding: "5px 10px", borderRadius: 999, fontWeight: 500 }}>
-            {listing.focus}
+            {listing.listing_type}
           </span>
         ) : null}
         {listing.environment ? (

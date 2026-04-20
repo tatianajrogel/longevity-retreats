@@ -24,6 +24,7 @@ const LISTING_SELECT = `
   notes,
   luxury_level,
   environment,
+  listing_type,
   listing_categories (
     categories (
       id,
@@ -66,6 +67,7 @@ export async function getListings(options: {
   categorySlug?: string;
   luxuryLevel?: string;
   environment?: string;
+  listingType?: string;
 }): Promise<{ ok: boolean; listings: ListingWithCategories[]; error?: string }> {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, listings: [], error: "missing_env" };
@@ -107,6 +109,10 @@ export async function getListings(options: {
 
   if (options.environment) {
     query = query.eq("environment", options.environment);
+  }
+
+  if (options.listingType) {
+    query = query.eq("listing_type", options.listingType);
   }
 
   const q = options.q?.trim();
