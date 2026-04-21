@@ -5,3 +5,4 @@ html/
 service-account.json
 .env.production.local
 .env.production
+.claude/settings.local.json
